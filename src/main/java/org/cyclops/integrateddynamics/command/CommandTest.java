@@ -28,6 +28,7 @@ public class CommandTest extends CommandMod {
 
     private static final String P = "org.cyclops.integrateddynamics.core.evaluate.variable.integration.";
     public static final List<String> CLASSES = ImmutableList.of(
+            P + "TestVariables",
             P + "TestBlockOperators",
             P + "TestItemStackOperators",
             P + "TestEntityOperators",

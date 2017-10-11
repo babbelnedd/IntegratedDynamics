@@ -25,6 +25,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
+import org.cyclops.commoncapabilities.api.capability.recipehandler.IRecipeHandler;
 import org.cyclops.commoncapabilities.api.capability.temperature.ITemperature;
 import org.cyclops.commoncapabilities.api.capability.work.IWorker;
 import org.cyclops.cyclopscore.datastructure.DimPos;
@@ -553,6 +554,22 @@ public class Aspects {
                             return temperature != null ? temperature.getDefaultTemperature() : 0;
                         }
                     }).handle(AspectReadBuilders.PROP_GET_DOUBLE, "defaulttemperature").buildRead();
+
+            public static final IAspectRead<ValueTypeBoolean.ValueBoolean, ValueTypeBoolean> BOOLEAN_ISRECIPEHANDLER =
+                    AspectReadBuilders.Machine.BUILDER_RECIPE_HANDLER_BOOLEAN.handle(new IAspectValuePropagator<IRecipeHandler, Boolean>() {
+                        @Override
+                        public Boolean getOutput(IRecipeHandler recipeHandler) {
+                            return recipeHandler != null;
+                        }
+                    }).handle(AspectReadBuilders.PROP_GET_BOOLEAN, "applicable").buildRead();
+            public static final IAspectRead<ValueTypeList.ValueList, ValueTypeList> LIST_GETRECIPES =
+                    AspectReadBuilders.Machine.BUILDER_RECIPE_HANDLER_LIST.handle(new IAspectValuePropagator<Pair<PartTarget, IAspectProperties>, ValueTypeList.ValueList>() {
+                        @Override
+                        public ValueTypeList.ValueList getOutput(Pair<PartTarget, IAspectProperties> input) {
+                            return ValueTypeList.ValueList.ofFactory(new ValueTypeListProxyPositionedRecipes(
+                                    input.getLeft().getTarget().getPos(), input.getLeft().getTarget().getSide()));
+                        }
+                    }).appendKind("recipes").buildRead();
 
             public static final IAspectValuePropagator<Pair<PartTarget, IAspectProperties>, IEnergyStorage> PROP_GET = new IAspectValuePropagator<Pair<PartTarget, IAspectProperties>, IEnergyStorage>() {
                 @Override

@@ -25,6 +25,8 @@ public class PartTypeMachineReader extends PartTypeReadBase<PartTypeMachineReade
                 Aspects.Read.Machine.DOUBLE_MAXTEMPERATURE,
                 Aspects.Read.Machine.DOUBLE_MINTEMPERATURE,
                 Aspects.Read.Machine.DOUBLE_DEFAULTTEMPERATURE,
+                Aspects.Read.Machine.BOOLEAN_ISRECIPEHANDLER,
+                Aspects.Read.Machine.LIST_GETRECIPES,
                 Aspects.Read.Machine.BOOLEAN_ISENERGY,
                 Aspects.Read.Machine.BOOLEAN_ISENERGYRECEIVER,
                 Aspects.Read.Machine.BOOLEAN_ISENERGYPROVIDER,

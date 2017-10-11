@@ -215,6 +215,8 @@ valuetype.valuetypes.integrateddynamics.block.name=Block
 valuetype.valuetypes.integrateddynamics.itemstack.name=Item
 valuetype.valuetypes.integrateddynamics.entity.name=Entity
 valuetype.valuetypes.integrateddynamics.fluidstack.name=Fluid
+valuetype.valuetypes.integrateddynamics.ingredients.name=Ingredients
+valuetype.valuetypes.integrateddynamics.recipe.name=Recipe
 
 # Part types
 parttype.parttypes.integrateddynamics.error.low_energy=Not enough energy
@@ -510,6 +512,10 @@ aspect.aspects.integrateddynamics.read.double.temperature.mintemperature.name=Mi
 aspect.aspects.integrateddynamics.read.double.temperature.mintemperature.info=The minimum temperature of the target in degrees Kelvin
 aspect.aspects.integrateddynamics.read.double.temperature.defaulttemperature.name=Default Temperature
 aspect.aspects.integrateddynamics.read.double.temperature.defaulttemperature.info=The default temperature of the target in degrees Kelvin
+aspect.aspects.integrateddynamics.read.boolean.recipehandler.applicable.name=Is Recipe Handler
+aspect.aspects.integrateddynamics.read.boolean.recipehandler.applicable.info=If the target can handle recipes
+aspect.aspects.integrateddynamics.read.list.recipehandler.recipes.name=Recipes
+aspect.aspects.integrateddynamics.read.list.recipehandler.recipes.info=Recipes that can be handled by the target
 aspect.aspects.integrateddynamics.read.boolean.fe.applicable.name=Is FE Handler
 aspect.aspects.integrateddynamics.read.boolean.fe.applicable.info=If the target in some way handles FE
 aspect.aspects.integrateddynamics.read.boolean.fe.isreceiver.name=Is FE Receiver

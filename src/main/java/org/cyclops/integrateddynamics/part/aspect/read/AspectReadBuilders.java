@@ -20,6 +20,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
+import org.cyclops.commoncapabilities.api.capability.block.BlockCapabilities;
+import org.cyclops.commoncapabilities.api.capability.recipehandler.IRecipeHandler;
 import org.cyclops.commoncapabilities.api.capability.temperature.ITemperature;
 import org.cyclops.commoncapabilities.api.capability.work.IWorker;
 import org.cyclops.cyclopscore.datastructure.DimPos;
@@ -382,14 +384,33 @@ public class AspectReadBuilders {
                 return TileHelpers.getCapability(dimPos.getWorld(), dimPos.getBlockPos(), input.getLeft().getTarget().getSide(), Capabilities.TEMPERATURE);
             }
         };
+        public static final IAspectValuePropagator<Pair<PartTarget, IAspectProperties>, IRecipeHandler> PROP_GET_RECIPE_HANDLER = new IAspectValuePropagator<Pair<PartTarget, IAspectProperties>, IRecipeHandler>() {
+            @Override
+            public IRecipeHandler getOutput(Pair<PartTarget, IAspectProperties> input) {
+                DimPos dimPos = input.getLeft().getTarget().getPos();
+                IRecipeHandler recipeHandler = TileHelpers.getCapability(dimPos.getWorld(), dimPos.getBlockPos(),
+                        input.getLeft().getTarget().getSide(), Capabilities.RECIPE_HANDLER);
+                if (recipeHandler == null) {
+                    IBlockState blockState = dimPos.getWorld().getBlockState(dimPos.getBlockPos());
+                    return BlockCapabilities.getInstance().getCapability(blockState, Capabilities.RECIPE_HANDLER,
+                            dimPos.getWorld(), dimPos.getBlockPos(), input.getLeft().getTarget().getSide());
+                }
+                return recipeHandler;
+            }
+        };
 
         public static final AspectBuilder<ValueTypeBoolean.ValueBoolean, ValueTypeBoolean, IWorker>
                 BUILDER_WORKER_BOOLEAN = AspectReadBuilders.BUILDER_BOOLEAN.handle(PROP_GET_WORKER, "machine");
         public static final AspectBuilder<ValueTypeBoolean.ValueBoolean, ValueTypeBoolean, ITemperature>
                 BUILDER_TEMPERATURE_BOOLEAN = AspectReadBuilders.BUILDER_BOOLEAN.handle(PROP_GET_TEMPERATURE, "temperature");
+        public static final AspectBuilder<ValueTypeBoolean.ValueBoolean, ValueTypeBoolean, IRecipeHandler>
+                BUILDER_RECIPE_HANDLER_BOOLEAN = AspectReadBuilders.BUILDER_BOOLEAN.handle(PROP_GET_RECIPE_HANDLER, "recipehandler");
 
         public static final AspectBuilder<ValueTypeDouble.ValueDouble, ValueTypeDouble, ITemperature>
                 BUILDER_TEMPERATURE_DOUBLE = AspectReadBuilders.BUILDER_DOUBLE.handle(PROP_GET_TEMPERATURE, "temperature");
+
+        public static final AspectBuilder<ValueTypeList.ValueList, ValueTypeList, Pair<PartTarget, IAspectProperties>>
+                BUILDER_RECIPE_HANDLER_LIST = AspectReadBuilders.BUILDER_LIST.appendKind("recipehandler");
     }
 
     public static final class Network {

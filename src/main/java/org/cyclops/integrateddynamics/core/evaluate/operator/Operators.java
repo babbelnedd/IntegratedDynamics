@@ -1,6 +1,7 @@
 package org.cyclops.integrateddynamics.core.evaluate.operator;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -66,6 +67,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * Collection of available operators.
@@ -3105,6 +3107,89 @@ public final class Operators {
                     return tag;
                 }
             })).build());
+
+    /**
+     * ----------------------------------- INGREDIENTS OPERATORS -----------------------------------
+     */
+
+    /**
+     * The number of ingredients of the item type
+     */
+    public static final IOperator INGREDIENTS_ITEM_SIZE = REGISTRY.register(OperatorBuilders.INGREDIENTS_1_SUFFIX_LONG
+            .output(ValueTypes.INTEGER).operatorName("item.size").symbol("Ingr.#items")
+            .function(new OperatorBase.IFunction() {
+                @Override
+                public IValue evaluate(OperatorBase.SafeVariablesGetter variables) throws EvaluationException {
+                    ValueObjectTypeIngredients.ValueIngredients value = variables.getValue(0);
+                    int count = 0;
+                    if (value.getRawValue().isPresent()) {
+                        count = value.getRawValue().get().getItemStackIngredients();
+                    }
+                    return ValueTypeInteger.ValueInteger.of(count);
+                }
+            }).build());
+
+    /**
+     * The list of possible items at the given position
+     */
+    public static final IOperator INGREDIENTS_ITEMS = REGISTRY.register(OperatorBuilders.INGREDIENTS_2_INFIX_LONG
+            .output(ValueTypes.LIST).operatorName("items").symbol("Ingr.items")
+            .function(new OperatorBase.IFunction() {
+                @Override
+                public IValue evaluate(OperatorBase.SafeVariablesGetter variables) throws EvaluationException {
+                    ValueObjectTypeIngredients.ValueIngredients value = variables.getValue(0);
+                    ValueTypeInteger.ValueInteger index = variables.getValue(1);
+                    List<ValueObjectTypeItemStack.ValueItemStack> list = Lists.newArrayList();
+                    if (value.getRawValue().isPresent()) {
+                        if (index.getRawValue() < 0
+                                || index.getRawValue() >= value.getRawValue().get().getItemStackIngredients()) {
+                            throw new EvaluationException("Index " + index.getRawValue() + " out of bounds, " +
+                                    "must be between 0 and " + value.getRawValue().get().getItemStackIngredients());
+                        }
+                        list = value.getRawValue().get().getItemStacks(index.getRawValue());
+                    }
+                    return ValueTypeList.ValueList.ofList(ValueTypes.OBJECT_ITEMSTACK, list);
+                }
+            }).build());
+
+    /**
+     * The item predicate at the given position
+     */
+    public static final IOperator INGREDIENTS_ITEM_PREDICATE = REGISTRY.register(OperatorBuilders.INGREDIENTS_2_INFIX_LONG
+            .output(ValueTypes.OPERATOR).operatorName("item_p").symbol("Ingr.item_p")
+            .function(new OperatorBase.IFunction() {
+                @Override
+                public IValue evaluate(OperatorBase.SafeVariablesGetter variables) throws EvaluationException {
+                    ValueObjectTypeIngredients.ValueIngredients value = variables.getValue(0);
+                    ValueTypeInteger.ValueInteger index = variables.getValue(1);
+
+                    if (value.getRawValue().isPresent()) {
+                        if (index.getRawValue() < 0
+                                || index.getRawValue() >= value.getRawValue().get().getItemStackIngredients()) {
+                            throw new EvaluationException("Index " + index.getRawValue() + " out of bounds, " +
+                                    "must be between 0 and " + value.getRawValue().get().getItemStackIngredients());
+                        }
+                        Predicate<ValueObjectTypeItemStack.ValueItemStack> predicate = value.getRawValue().get()
+                                .getItemStackPredicate(index.getRawValue());
+                        return ValueTypeOperator.ValueOperator.of(
+                                new PredicateOperator(predicate, ValueTypes.OBJECT_ITEMSTACK, value.getRawValue().get()
+                                        .getItemStacks(index.getRawValue())));
+                    }
+                    return ValueTypeOperator.ValueOperator.of(new PredicateOperator(
+                            Predicates.alwaysFalse(), ValueTypes.OBJECT_ITEMSTACK, Collections.emptyList()));
+                }
+            }).build());
+    static {
+        REGISTRY.registerSerializer(new PredicateOperator.Serializer());
+    }
+
+    // TODO: also for fluids and energy
+
+    /**
+     * ----------------------------------- RECIPE OPERATORS -----------------------------------
+     */
+
+    // TODO
 
     /**
      * ----------------------------------- GENERAL OPERATORS -----------------------------------

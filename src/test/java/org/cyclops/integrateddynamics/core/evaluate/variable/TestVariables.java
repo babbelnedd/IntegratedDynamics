@@ -1,8 +1,15 @@
 package org.cyclops.integrateddynamics.core.evaluate.variable;
 
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.NBTTagCompound;
+import org.cyclops.commoncapabilities.api.capability.recipehandler.RecipeIngredientItemStack;
+import org.cyclops.commoncapabilities.api.capability.recipehandler.RecipeIngredients;
 import org.cyclops.integrateddynamics.api.evaluate.EvaluationException;
 import org.cyclops.integrateddynamics.api.evaluate.variable.IValueType;
+import org.cyclops.integrateddynamics.core.evaluate.variable.integration.DummyVariableIngredients;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
